@@ -25,6 +25,7 @@
     "joi": "^17.9.2"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
     "nodemon": "^3.0.1"
   }
