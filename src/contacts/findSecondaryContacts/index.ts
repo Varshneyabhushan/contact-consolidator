@@ -1,3 +1,4 @@
+import { ContactsTable } from "..";
 import DatabaseConnection from "../../database";
 
 interface ChildContact {
@@ -8,6 +9,6 @@ interface ChildContact {
 
 export default function makeFindSecondaryContacts(databaseConnection: DatabaseConnection) {
     return function findSecondaryContacts(contactId: number): Promise<ChildContact[]> {
-        return Promise.reject("not yet implemented")
+        return databaseConnection.find(ContactsTable, { linkedId : contactId })
     }
 }
