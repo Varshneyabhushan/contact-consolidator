@@ -20,7 +20,7 @@ export default class DatabaseConnection {
         })
     }
 
-    private query<T>(sql: string, values?: any[]): Promise<T> {
+    query<T>(sql: string, values?: any[]): Promise<T> {
         return new Promise((resolve, reject) => {
             this.pool.query(sql, values, (err, results) => {
                 if (err) {
@@ -40,6 +40,25 @@ export default class DatabaseConnection {
             console.log(`Table ${tableName} created successfully.`);
         } catch (err: any) {
             throw new DatabaseError(`Error creating table ${tableName}: ${err.message}`);
+        }
+    }
+
+    async find<T>(tableName: string, conditions: any = {}): Promise<T[]> {
+        const conditionKeys = Object.keys(conditions);
+        const conditionValues = Object.values(conditions);
+
+        if (conditionKeys.length === 0) {
+            throw new DatabaseError('No conditions provided for the find operation.');
+        }
+
+        const whereClause = conditionKeys.map((key) => `${key} = ?`).join(' AND ');
+        const sql = `SELECT * FROM ${tableName} WHERE ${whereClause}`;
+
+        try {
+            const results = await this.query<T[]>(sql, conditionValues);
+            return results;
+        } catch (err : any) {
+            throw new DatabaseError(`Error executing find operation: ${err.message}`);
         }
     }
 
