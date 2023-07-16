@@ -17,9 +17,9 @@ enum LinkPrecedence {
 }
 
 export interface Contact {
-    id : number;
-    phoneNumber : string;
-    email : string;
+    id ?: number;
+    phoneNumber ?: string;
+    email ?: string;
     linkedId ?: number;
     linkPrecedence : LinkPrecedence;
     createdAt : Date;
