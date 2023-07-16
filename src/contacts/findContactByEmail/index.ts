@@ -5,18 +5,21 @@ const procedureName = "FindPrimaryContactByEmail"
 const createProcedure = `
 CREATE PROCEDURE IF NOT EXISTS ${procedureName} (IN emailToFind VARCHAR(255))
 BEGIN
-  DECLARE _linkedId INT;
-  SET _linkedId = (SELECT linkedId FROM ${ContactsTable} WHERE email = emailToFind);
-
-  WHILE _linkedId IS NOT NULL DO
-    SET _linkedId = (SELECT linkedId FROM contacts WHERE id = _linkedId);
+  DECLARE current INT;
+  DECLARE next INT;
+  
+  SELECT id, linkedId INTO current, next FROM ${ContactsTable} WHERE email = emailToFind;
+  
+  WHILE next IS NOT NULL DO
+    SET current = next;
+    SET next = (SELECT linkedId FROM ${ContactsTable} WHERE id = next);
   END WHILE;
-
-  SELECT * FROM contacts WHERE id = _linkedId;
+  
+  SELECT * FROM ${ContactsTable} WHERE id = current;
 END;
 `
 
-export default function makeFindContactByEmail(databaseConnection : DatabaseConnection) {
+export default function makeFindPrimaryContactByEmail(databaseConnection : DatabaseConnection) {
 
     const ready = databaseConnection.query(createProcedure)
 
