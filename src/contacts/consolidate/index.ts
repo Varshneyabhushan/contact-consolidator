@@ -43,7 +43,7 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
             }
         }
 
-        let primaryContactId: number = contact1?.id || contact2?.id || 0
+        let primaryContact: Contact = contact1 || contact2 as Contact
         if (!contact1 || !contact2) {
             const newContact: NewContact = {
                 email: contact.email,
@@ -58,30 +58,35 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
             let contactId1 = contact1?.id as number
             let contactId2 = contact2?.id as number
 
-            primaryContactId = await mergeContacts(contactId1, contactId2)
+            let contactId = await mergeContacts(contactId1, contactId2)
+            primaryContact = (contactId == contactId1) ? contact1 : contact2
         }
 
-        const secondaryContacts = await findSecondaryContacts(primaryContactId)
-        const emails: string[] = []
-        const phoneNumbers: string[] = []
+        const secondaryContacts = await findSecondaryContacts(primaryContact.id ?? 0)
+
+        const emails = new Set<string>([])
+        const phoneNumbers = new Set<string>([])
+        const addDetails = ({ phoneNumber, email }: { phoneNumber?: string, email?: string }) => {
+            if (phoneNumber) {
+                phoneNumbers.add(phoneNumber)
+            }
+
+            if (email) {
+                emails.add(email)
+            }
+        }
+
         const secondaryContactIds: number[] = []
-
         for (let contact of secondaryContacts) {
-            if (contact.email) {
-                emails.push(contact.email)
-            }
-
-            if (contact.phoneNumber) {
-                phoneNumbers.push(contact.phoneNumber)
-            }
-
+            addDetails(contact)
             secondaryContactIds.push(contact.id)
         }
+        addDetails(primaryContact)
 
         return Promise.resolve({
-            primaryContactId,
-            emails,
-            phoneNumbers,
+            primaryContactId: primaryContact.id || 0,
+            emails: [...emails],
+            phoneNumbers: [...phoneNumbers],
             secondaryContactIds,
         })
     }
