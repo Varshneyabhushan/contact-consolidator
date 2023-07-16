@@ -5,6 +5,12 @@ export interface AppConfig {
     port: number;
 }
 
+export interface RouterError {
+    message : string;
+    payload : any;
+    type : string;
+}
+
 const startRouter = (
     appConfig: AppConfig,
 ): Promise<void> => {
