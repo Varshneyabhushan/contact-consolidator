@@ -1,6 +1,7 @@
 
 //loading config variables
 import config from './config';
+import initContacts from './contacts';
 import DatabaseConnection from './database';
 
 //router
@@ -13,7 +14,7 @@ async function init() {
 
     const connection = new DatabaseConnection(config.database)
     try {
-        await connection.onConnect
+        await initContacts(connection)
         console.log("database connection successful")
     }
     catch(e) {
