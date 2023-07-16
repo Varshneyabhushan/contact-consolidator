@@ -5,7 +5,7 @@ export interface ConsolidationRequest {
     phoneNumber ?: string;
 }
 
-interface Contact {
+interface ContactResponse {
     primaryContactId : number;
     emails : string[];
     phoneNumbers : string[];
@@ -13,7 +13,7 @@ interface Contact {
 }
 
 export default function makeConsolidator() {
-    return function consolidate(contact : ConsolidationRequest) : Promise<Contact> {
+    return function consolidate(contact : ConsolidationRequest) : Promise<ContactResponse> {
         return Promise.resolve({
             primaryContactId : 1,
             emails : [contact.email ?? ""],
