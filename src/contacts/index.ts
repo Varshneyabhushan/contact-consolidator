@@ -10,6 +10,23 @@ const contactsColumns = `
     updatedAt DATETIME NOT NULL,
     deletedAt DATETIME
 `
+
+enum LinkPrecedence {
+    primary = "primary",
+    secondary = "secondary"
+}
+
+export interface Contact {
+    id : number;
+    phoneNumber : string;
+    email : string;
+    linkedId ?: number;
+    linkPrecedence : LinkPrecedence;
+    createdAt : Date;
+    updatedAt : Date;
+    deletedAt ?: Date;
+}
+
 export default function initContacts(database : DatabaseConnection) {
     database.createTableIfNotExists("contacts", contactsColumns)
 }
