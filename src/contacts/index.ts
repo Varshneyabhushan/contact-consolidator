@@ -11,7 +11,7 @@ const contactsColumns = `
     deletedAt DATETIME
 `
 
-enum LinkPrecedence {
+export enum LinkPrecedence {
     primary = "primary",
     secondary = "secondary"
 }
