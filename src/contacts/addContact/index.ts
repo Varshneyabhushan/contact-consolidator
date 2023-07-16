@@ -9,7 +9,7 @@ export interface NewContact {
 }
 
 export default function makeContactAdder(connection: DatabaseConnection) {
-    return function addPrimaryContact(newContact: NewContact) {
+    return function addContact(newContact: NewContact) {
         const timeNow = new Date()
 
         return connection.insert(ContactsTable, {
