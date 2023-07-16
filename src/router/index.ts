@@ -1,4 +1,5 @@
 import express from "express";
+import makeConsolidateRoute from "./consolidate";
 
 export interface AppConfig {
     port: number;
@@ -14,7 +15,7 @@ const startRouter = (
     app.use(express.urlencoded({ extended: true }));
 
     //TODO implement authentication
-    // app.post("/identify", (req, res) => {})
+    app.post("/identify", makeConsolidateRoute())
 
     app.use('*', (_, res) => res.status(404).json({ message: 'invalid route' }));
 
