@@ -1,8 +1,8 @@
 
 
 export interface ConsolidationRequest {
-    email : string;
-    phoneNumber : string;
+    email ?: string;
+    phoneNumber ?: string;
 }
 
 interface Contact {
@@ -16,8 +16,8 @@ export default function makeConsolidator() {
     return function consolidate(contact : ConsolidationRequest) : Promise<Contact> {
         return Promise.resolve({
             primaryContactId : 1,
-            emails : [contact.email],
-            phoneNumbers : [contact.phoneNumber],
+            emails : [contact.email ?? ""],
+            phoneNumbers : [contact.phoneNumber ?? ""],
             secondaryContactIds : [1,2]
         })
     }
