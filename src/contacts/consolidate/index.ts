@@ -1,3 +1,4 @@
+import DatabaseConnection from "../../database";
 
 
 export interface ConsolidationRequest {
@@ -12,7 +13,7 @@ interface ContactResponse {
     secondaryContactIds : number[];
 }
 
-export default function makeConsolidator() {
+export default function makeConsolidator(databaseConnection : DatabaseConnection) {
     return function consolidate(contact : ConsolidationRequest) : Promise<ContactResponse> {
         return Promise.resolve({
             primaryContactId : 1,

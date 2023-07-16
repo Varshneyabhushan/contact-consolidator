@@ -23,7 +23,7 @@ async function init() {
     }
     
     // init router
-    await startRouter(config.app)
+    await startRouter(config.app, connection)
     console.log('started listening on port : ', config.app.port);
 }
 

@@ -1,5 +1,6 @@
 import express from "express";
 import makeConsolidateRoute from "./consolidate";
+import DatabaseConnection from "../database";
 
 export interface AppConfig {
     port: number;
@@ -13,6 +14,7 @@ export interface RouterError {
 
 const startRouter = (
     appConfig: AppConfig,
+    databaseConnection : DatabaseConnection,
 ): Promise<void> => {
     const app = express();
 
@@ -21,7 +23,7 @@ const startRouter = (
     app.use(express.urlencoded({ extended: true }));
 
     //TODO implement authentication
-    app.post("/identify", makeConsolidateRoute())
+    app.post("/identify", makeConsolidateRoute(databaseConnection))
 
     app.use('*', (_, res) => res.status(404).json({ message: 'invalid route' }));
 
