@@ -27,6 +27,8 @@ export interface Contact {
     deletedAt ?: Date;
 }
 
+export const ContactsTable = "contacts"
+
 export default function initContacts(database : DatabaseConnection) {
-    database.createTableIfNotExists("contacts", contactsColumns)
+    database.createTableIfNotExists(ContactsTable, contactsColumns)
 }
