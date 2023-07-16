@@ -8,7 +8,7 @@ BEGIN
   DECLARE current INT;
   DECLARE next INT;
   
-  SELECT id, linkedId INTO current, next FROM ${ContactsTable} WHERE email = emailToFind;
+  SELECT id, linkedId INTO current, next FROM ${ContactsTable} WHERE email = emailToFind ORDER BY id LIMIT 1;
   
   WHILE next IS NOT NULL DO
     SET current = next;
