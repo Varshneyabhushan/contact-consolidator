@@ -1,14 +1,14 @@
 import { Handler } from "express";
-import makeConsolidator from "../contacts/consolidate";
-import validate from "../contacts/consolidate/validation";
+import makeContactIdentifier from "../contacts/identify";
+import validate from "../contacts/identify/validation";
 import DatabaseConnection from "../database";
 
 export default function makeConsolidateRoute(databaseConnection: DatabaseConnection): Handler {
-    const consolidate = makeConsolidator(databaseConnection)
+    const identify = makeContactIdentifier(databaseConnection)
     return async (req, res) => {
         try {
             let request = await validate(req.body)
-            let contact = await consolidate(request)
+            let contact = await identify(request)
             res.json({ contact })
             return
         }
