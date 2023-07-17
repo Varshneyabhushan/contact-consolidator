@@ -43,7 +43,7 @@ When a contact is sent in the payload, we find the primary contact that is attac
 
 ## TODOs
 Due to the time constraints following things are left, unfixed
-1. Rate limiter, authentication is not implemented
+1. authentication is not implemented
 2. endpoint doesn't work on HTTP
 3. only one strategy of merging the contacts is implemented, while other strategies are possible based on requirement
 4. unit tests are not implemented
