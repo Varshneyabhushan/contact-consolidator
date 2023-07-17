@@ -3,8 +3,8 @@ import { ConsolidationRequest } from ".";
 import { RouterError } from "../../router";
 
 const consolidationRequestSchema = Joi.object({
-    email : Joi.string().email(),
-    phoneNumber : Joi.string(),
+    email : Joi.string().email().allow(null),
+    phoneNumber : Joi.string().allow(null),
 })
 
 export default function validate(payload : any) : Promise<ConsolidationRequest> {
