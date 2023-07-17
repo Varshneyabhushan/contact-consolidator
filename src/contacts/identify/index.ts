@@ -3,7 +3,6 @@ import DatabaseConnection from "../../database";
 import makeContactAdder, { NewContact } from "../addContact";
 import makeFindPrimaryContactByEmail from "../findContactByEmail";
 import makeFindPrimaryContactByPhone from "../findContactByPhone";
-import makeFindSecondaryContacts from "../findSecondaryContacts";
 import makeMergeContacts from "../mergeContacts";
 import makeContactSummaryFetcher, { ContactSummary } from "./contactDetails";
 
@@ -38,7 +37,7 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
             }
         }
 
-        let primaryContact: Contact = contact1 || contact2 as Contact
+        let primaryContact = contact1 || contact2 as Contact
         if (!contact1 || !contact2) {
             const newContact: NewContact = {
                 email: contact.email,
