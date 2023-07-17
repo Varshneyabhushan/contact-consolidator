@@ -24,7 +24,7 @@ export default function makeFindPrimaryContactByEmail(databaseConnection: Databa
 
   const ready = databaseConnection.query(createProcedure)
 
-  return function (email: string) {
+  return function (email: string) : Promise<PrimaryContact | undefined> {
     return ready.then(
       () => databaseConnection.query(`CALL ${procedureName}('${email}')`) as Promise<PrimaryContactFinderResult>
     )

@@ -25,7 +25,7 @@ export default function makeFindPrimaryContactByPhone(databaseConnection : Datab
 
     const ready = databaseConnection.query(createProcedure)
 
-    return function(phoneNumber : string) {
+    return function(phoneNumber : string) : Promise<PrimaryContact | undefined> {
         return ready.then(
             () => databaseConnection.query(`CALL ${procedureName}('${phoneNumber}')`) as Promise<PrimaryContactFinderResult>
         )
