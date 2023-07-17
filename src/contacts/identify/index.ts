@@ -1,4 +1,4 @@
-import { Contact, LinkPrecedence } from "..";
+import { LinkPrecedence, PrimaryContact } from "..";
 import DatabaseConnection from "../../database";
 import makeContactAdder, { NewContact } from "../addContact";
 import makeFindPrimaryContactByEmail from "../findContactByEmail";
@@ -17,14 +17,14 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
     const findByEmail = makeFindPrimaryContactByEmail(databaseConnection)
 
     const addContact = makeContactAdder(databaseConnection)
-    const mergeContacts = makeMergeContacts(databaseConnection)
+    const consolidate = makeConsolidateContacts(databaseConnection)
 
     const getContactSummary = makeContactSummaryFetcher(databaseConnection)
 
     return async function identify(contact: ConsolidationRequest): Promise<ContactSummary> {
         const [contact1, contact2] = await Promise.all([
-            contact.phoneNumber ? findByPhone(contact.phoneNumber) : Promise.resolve(null),
-            contact.email ? findByEmail(contact.email) : Promise.resolve(null)
+            contact.phoneNumber ? findByPhone(contact.phoneNumber) : Promise.resolve(undefined),
+            contact.email ? findByEmail(contact.email) : Promise.resolve(undefined)
         ])
 
         if (!contact1 && !contact2) {
@@ -37,25 +37,47 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
             }
         }
 
-        let primaryContact = contact1 || contact2 as Contact
-        if (!contact1 || !contact2) {
-            const newContact: NewContact = {
-                email: contact.email,
-                phoneNumber: contact.phoneNumber,
-                linkedId: contact2?.id || contact1?.id,
+        let primaryContact = await consolidate(contact1, contact2, contact)
+        return getContactSummary(primaryContact)
+    }
+}
+
+function makeConsolidateContacts(databaseConnection: DatabaseConnection) {
+
+    const addContact = makeContactAdder(databaseConnection)
+    const mergeContacts = makeMergeContacts(databaseConnection)
+
+    return async function consolidate(
+        primaryContact1: PrimaryContact | undefined,
+        primaryContact2: PrimaryContact | undefined,
+        newContact: ConsolidationRequest,
+    ): Promise<PrimaryContact> {
+        if (!primaryContact1 && !primaryContact2) {
+            return Promise.reject("both are invalid")
+        }
+
+        if (!primaryContact1 || !primaryContact2) {
+            const addingContact: NewContact = {
+                email: newContact.email,
+                phoneNumber: newContact.phoneNumber,
+                linkedId: primaryContact1?.id || primaryContact2?.id,
                 linkPrecedence: LinkPrecedence.secondary,
             }
 
-            await addContact(newContact)
-        } else if (contact1.id != contact2.id) {
-            //merge contacts
-            let contactId1 = contact1?.id as number
-            let contactId2 = contact2?.id as number
-
-            let contactId = await mergeContacts(contactId1, contactId2)
-            primaryContact = (contactId == contactId1) ? contact1 : contact2
+            await addContact(addingContact)
+            return primaryContact1 || primaryContact2 as PrimaryContact
         }
 
-        return getContactSummary(primaryContact)
+        if (primaryContact1.id == primaryContact2.id) {
+            return primaryContact1
+        }
+
+        //merge contacts
+        let contactId = await mergeContacts(primaryContact1.id, primaryContact2.id)
+        if (contactId == primaryContact1.id) {
+            return primaryContact1
+        }
+
+        return primaryContact2
     }
 }
