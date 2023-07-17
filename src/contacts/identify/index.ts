@@ -57,6 +57,7 @@ function makeConsolidateContacts(databaseConnection: DatabaseConnection) {
         }
 
         if (!primaryContact1 || !primaryContact2) {
+            const primaryContact = primaryContact1 || primaryContact2 as PrimaryContact
             const addingContact: NewContact = {
                 email: newContact.email,
                 phoneNumber: newContact.phoneNumber,
@@ -64,8 +65,14 @@ function makeConsolidateContacts(databaseConnection: DatabaseConnection) {
                 linkPrecedence: LinkPrecedence.secondary,
             }
 
+            //no need to add
+            if((primaryContact1 && newContact.phoneNumber) || 
+                (primaryContact2 && newContact.email)) {
+                    return primaryContact
+                }
+
             await addContact(addingContact)
-            return primaryContact1 || primaryContact2 as PrimaryContact
+            return primaryContact
         }
 
         if (primaryContact1.id == primaryContact2.id) {
