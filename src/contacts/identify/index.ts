@@ -5,18 +5,12 @@ import makeFindPrimaryContactByEmail from "../findContactByEmail";
 import makeFindPrimaryContactByPhone from "../findContactByPhone";
 import makeFindSecondaryContacts from "../findSecondaryContacts";
 import makeMergeContacts from "../mergeContacts";
+import makeContactSummaryFetcher, { ContactSummary } from "./contactDetails";
 
 
 export interface ConsolidationRequest {
     email?: string;
     phoneNumber?: string;
-}
-
-interface ContactResponse {
-    primaryContactId: number;
-    emails: string[];
-    phoneNumbers: string[];
-    secondaryContactIds: number[];
 }
 
 export default function makeContactIdentifier(databaseConnection: DatabaseConnection) {
@@ -25,9 +19,10 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
 
     const addContact = makeContactAdder(databaseConnection)
     const mergeContacts = makeMergeContacts(databaseConnection)
-    const findSecondaryContacts = makeFindSecondaryContacts(databaseConnection)
 
-    return async function identify(contact: ConsolidationRequest): Promise<ContactResponse> {
+    const getContactSummary = makeContactSummaryFetcher(databaseConnection)
+
+    return async function identify(contact: ConsolidationRequest): Promise<ContactSummary> {
         const [contact1, contact2] = await Promise.all([
             contact.phoneNumber ? findByPhone(contact.phoneNumber) : Promise.resolve(null),
             contact.email ? findByEmail(contact.email) : Promise.resolve(null)
@@ -62,32 +57,6 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
             primaryContact = (contactId == contactId1) ? contact1 : contact2
         }
 
-        const secondaryContacts = await findSecondaryContacts(primaryContact.id ?? 0)
-
-        const emails = new Set<string>([])
-        const phoneNumbers = new Set<string>([])
-        const addDetails = ({ phoneNumber, email }: { phoneNumber?: string, email?: string }) => {
-            if (phoneNumber) {
-                phoneNumbers.add(phoneNumber)
-            }
-
-            if (email) {
-                emails.add(email)
-            }
-        }
-
-        const secondaryContactIds: number[] = []
-        for (let contact of secondaryContacts) {
-            addDetails(contact)
-            secondaryContactIds.push(contact.id)
-        }
-        addDetails(primaryContact)
-
-        return Promise.resolve({
-            primaryContactId: primaryContact.id || 0,
-            emails: [...emails],
-            phoneNumbers: [...phoneNumbers],
-            secondaryContactIds,
-        })
+        return getContactSummary(primaryContact)
     }
 }
