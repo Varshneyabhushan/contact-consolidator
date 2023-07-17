@@ -43,10 +43,11 @@ When a contact is sent in the payload, we find the primary contact that is attac
 
 ## TODOs
 Due to the time constraints following things are left, unfixed
-1. endpoint doesn't work on HTTP
-2. only one strategy of merging the contacts is implemented, while other strategies are possible based on requirement
-3. unit tests are not implemented
-4. Data validation is not done thoroughly
-5. phoneNumber that is accepted is a simple string (even "null" is considered as a phoneNumber)
-6. Endpoint is not highly available or scalable
+1. Rate limiter, authentication is not implemented
+2. endpoint doesn't work on HTTP
+3. only one strategy of merging the contacts is implemented, while other strategies are possible based on requirement
+4. unit tests are not implemented
+5. Data validation is not done thoroughly
+6. phoneNumber that is accepted is a simple string (even "null" is considered as a phoneNumber)
+7. Endpoint is not highly available or scalable
 
