@@ -17,18 +17,28 @@ export enum LinkPrecedence {
 }
 
 export interface Contact {
-    id ?: number;
-    phoneNumber ?: string;
-    email ?: string;
-    linkedId ?: number;
-    linkPrecedence : LinkPrecedence;
-    createdAt : Date;
-    updatedAt : Date;
-    deletedAt ?: Date;
+    id?: number;
+    phoneNumber?: string;
+    email?: string;
+    linkedId?: number;
+    linkPrecedence: LinkPrecedence;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt?: Date;
+}
+
+export interface PrimaryContact {
+    id: number;
+    phoneNumber?: string;
+    email?: string;
+    linkPrecedence: LinkPrecedence;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt?: Date;
 }
 
 export const ContactsTable = "contacts"
 
-export default function initContacts(database : DatabaseConnection) {
+export default function initContacts(database: DatabaseConnection) {
     database.createTableIfNotExists(ContactsTable, contactsColumns)
 }

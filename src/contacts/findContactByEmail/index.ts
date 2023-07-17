@@ -1,5 +1,6 @@
-import { Contact, ContactsTable } from "..";
+import { ContactsTable, PrimaryContact } from "..";
 import DatabaseConnection from "../../database";
+import { PrimaryContactFinderResult } from "../findContactByPhone";
 
 const procedureName = "FindPrimaryContactByEmail"
 const createProcedure = `
@@ -19,15 +20,15 @@ BEGIN
 END;
 `
 
-export default function makeFindPrimaryContactByEmail(databaseConnection : DatabaseConnection) {
+export default function makeFindPrimaryContactByEmail(databaseConnection: DatabaseConnection) {
 
-    const ready = databaseConnection.query(createProcedure)
+  const ready = databaseConnection.query(createProcedure)
 
-    return function(email : string) : Promise<Contact> {
-        return ready.then(
-            () => databaseConnection.query(`CALL ${procedureName}('${email}')`) as Promise<Contact[]>
-        )
-        .then(result => result[0] as unknown as Contact[])
-        .then(contacts => contacts[0])
-    }
+  return function (email: string) {
+    return ready.then(
+      () => databaseConnection.query(`CALL ${procedureName}('${email}')`) as Promise<PrimaryContactFinderResult>
+    )
+      .then(result => result[0] as unknown as PrimaryContact[])
+      .then(contacts => contacts[0])
+  }
 }

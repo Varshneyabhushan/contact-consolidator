@@ -1,4 +1,4 @@
-import { Contact, ContactsTable } from "..";
+import { ContactsTable, PrimaryContact } from "..";
 import DatabaseConnection from "../../database";
 
 const procedureName = "FindPrimaryContactByPhoneNumber"
@@ -19,15 +19,17 @@ BEGIN
 END;
 `
 
+export type PrimaryContactFinderResult = [PrimaryContact[], any]
+
 export default function makeFindPrimaryContactByPhone(databaseConnection : DatabaseConnection) {
 
     const ready = databaseConnection.query(createProcedure)
 
-    return function(phoneNumber : string) : Promise<Contact> {
+    return function(phoneNumber : string) {
         return ready.then(
-            () => databaseConnection.query(`CALL ${procedureName}('${phoneNumber}')`) as Promise<Contact[]>
+            () => databaseConnection.query(`CALL ${procedureName}('${phoneNumber}')`) as Promise<PrimaryContactFinderResult>
         )
-        .then(result => result[0] as unknown as Contact[])
+        .then((result) => result[0])
         .then(contacts => contacts[0])
     }
 }
