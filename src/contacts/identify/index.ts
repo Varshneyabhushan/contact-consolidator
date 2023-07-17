@@ -27,6 +27,7 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
             contact.email ? findByEmail(contact.email) : Promise.resolve(undefined)
         ])
 
+        //create primaryContact
         if (!contact1 && !contact2) {
             const newId = await addContact(contact)
             return {
@@ -35,6 +36,15 @@ export default function makeContactIdentifier(databaseConnection: DatabaseConnec
                 phoneNumbers: [contact.phoneNumber ?? ""],
                 secondaryContactIds: []
             }
+        }
+
+        /**
+        * if one of the primaryContact doesn't exist and we want to add,
+        * both of the email, phoneNumber should exist
+        */
+        if (!contact.phoneNumber || !contact.email) {
+            const primaryContact = contact1 || contact2 as PrimaryContact
+            return getContactSummary(primaryContact)
         }
 
         let primaryContact = await consolidate(contact1, contact2, contact)
@@ -64,12 +74,6 @@ function makeConsolidateContacts(databaseConnection: DatabaseConnection) {
                 linkedId: primaryContact1?.id || primaryContact2?.id,
                 linkPrecedence: LinkPrecedence.secondary,
             }
-
-            //no need to add
-            if((primaryContact1 && newContact.phoneNumber) || 
-                (primaryContact2 && newContact.email)) {
-                    return primaryContact
-                }
 
             await addContact(addingContact)
             return primaryContact
