@@ -1,4 +1,4 @@
-import { Contact } from "..";
+import { PrimaryContact } from "..";
 import DatabaseConnection from "../../database";
 import makeFindSecondaryContacts from "../findSecondaryContacts";
 
@@ -12,7 +12,7 @@ export interface ContactSummary {
 export default function makeContactSummaryFetcher(databaseConnection: DatabaseConnection) {
     const findSecondaryContacts = makeFindSecondaryContacts(databaseConnection)
 
-    return async function (primaryContact: Contact) : Promise<ContactSummary> {
+    return async function (primaryContact: PrimaryContact) : Promise<ContactSummary> {
         const secondaryContacts = await findSecondaryContacts(primaryContact.id ?? 0)
 
         const emails = new Set<string>([])
@@ -35,7 +35,7 @@ export default function makeContactSummaryFetcher(databaseConnection: DatabaseCo
         addDetails(primaryContact)
 
         return Promise.resolve({
-            primaryContactId: primaryContact.id || 0,
+            primaryContactId: primaryContact.id,
             emails: [...emails],
             phoneNumbers: [...phoneNumbers],
             secondaryContactIds,
