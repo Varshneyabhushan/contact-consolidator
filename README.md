@@ -12,12 +12,13 @@ linkedId : https://www.linkedin.com/in/varbhushan/
 
 ## How to start the application
 
-1. Install the node_modules dependencies including dev dependencies
+1. Install the node_modules dependencies, including dev dependencies
 ```
 npm install
 ```
 
-2. fill the required details in .env file. Following describes what each variable does
+2. fill the required details in .env file. Use sample.env as template. Following describes what each variable does
+
 ```
 * PORT => port of the application
 * REQUESTS_PER_MINUTE => number of requests permitted per minute (rate limiting)
@@ -27,7 +28,7 @@ npm install
 * DATABASE => database's name
 ```
 
-3. The repository is written in typescript. So, the code need to be builded first
+3. The repository is written in typescript. So, the code need to be builded to vanilla javascript first
 
 ```
 npm run build
