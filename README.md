@@ -10,6 +10,27 @@ my portfolio : https://me.bhushan.fun
 
 linkedId : https://www.linkedin.com/in/varbhushan/
 
+## How to start the application
+
+fill the required details in .env file. Following describes what each variable does
+* PORT => port of the application
+* REQUESTS_PER_MINUTE => number of requests permitted per minute (rate limiting)
+* HOST => host address of MySQL database
+* USERNAME => username for the database
+* PASSWORD => password for the database
+* DATABASE => database's name
+
+The repository is written in typescript. So, the code need to be builded first
+
+```
+npm run build
+```
+
+Now, vanilla javascript should be present in the `dist` folder, run the following command to start the application
+```
+npm start
+```
+
 ## About
 this endpoint merges all the known contacts and idenfies the person.
 
