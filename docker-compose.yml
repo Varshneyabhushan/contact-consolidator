@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  fff.scrapper:
+    image: consolidator.image
+    container_name: consolidator.instance
+    
+    environment:
+      - PORT=80
+
+    ports:
+      - ${PORT}:80
+
+    build:
+      context: .
+  
