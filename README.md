@@ -12,6 +12,8 @@ linkedId : https://www.linkedin.com/in/varbhushan/
 
 ## How to start the application
 
+### method #1
+
 1. Install the node_modules dependencies, including dev dependencies
 ```
 npm install
@@ -37,6 +39,17 @@ npm run build
 4. Now, vanilla javascript should be present in the `dist` folder, run the following command to start the application
 ```
 npm start
+```
+
+### method #2
+
+As the Dockerfile and docker-compose.yml is added, the application can be started in docker containers
+
+1. install docker deamon in your computer, as per these instructions: __https://docs.docker.com/engine/install/__
+2. fill the .env file as in the instructions above
+3. run the following command and the application will start at the port specified in the .env file
+```
+docker compose up -d
 ```
 
 Endpoint `/identify` will be exposed at the port specified in the .env file. For example, if the port is `3000`, endpoint will be `http://localhost:3000/identify`
