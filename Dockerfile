@@ -1,5 +1,5 @@
 
-FROM node:alpine as builder
+FROM node:21.6.0-alpine3.19 as builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build
 
 #only js files
-FROM node:alpine as hosting
+FROM node:21.6.0-alpine3.19 as hosting
 
 # skips npm run prepare and other stuff
 ENV NODE_ENV=production
